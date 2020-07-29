@@ -70,19 +70,19 @@ public class Tank {
     	switch (dir) {
 		case LEFT:
 			//坦克换图片
-	    	g.drawImage(ResourceMgr.tankL, x, y, null);	        
+	    	g.drawImage(this.group==Group.Rad?ResourceMgr.radTankL:ResourceMgr.tankL, x, y, null);	        
 			break;
 		case RIGHT:
 		    //坦克换图片
-    	    g.drawImage(ResourceMgr.tankR, x, y, null);	        
+    	    g.drawImage(this.group==Group.Rad?ResourceMgr.radTankR:ResourceMgr.tankR, x, y, null);	        
     	    break;
 		case UP:
 			//坦克换图片
-	    	g.drawImage(ResourceMgr.tankU, x, y, null);	        
+	    	g.drawImage(this.group==Group.Rad?ResourceMgr.radTankU:ResourceMgr.tankU, x, y, null);	        
 			break;
 		case DOWN:
 			//坦克换图片
-	    	g.drawImage(ResourceMgr.tankD, x, y, null);	        
+	    	g.drawImage(this.group==Group.Rad?ResourceMgr.radTankD:ResourceMgr.tankD, x, y, null);	        
 			break;
 		default:
 			break;

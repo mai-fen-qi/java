@@ -1,0 +1,102 @@
+https://www.jianshu.com/p/d9d9dcf23359
+1.饿汉式单例 /*会预加载  */
+private static A0 INSTENS = new A0()；
+private A0(){}
+private  static A0 getINSTENS（）{
+ return INSTENS；
+}
+2.双重检索单例/*效率低下*/
+
+private static volatile A0 INSTENS；
+private A0(){}
+private A0 getINSTENS(){
+  if(INSTENS == null)
+      synchronized(A0.class){
+          if(INSTENS == null){
+            INSTENS = new A0();
+          }
+          return INSTENS；
+      }
+}
+3.静态内部类单例
+    private A1(){}
+    private static class  Danli{
+        private final static A1  INSTENS = new A1();
+    }
+    public static  A1 INSTENS(){
+        return Danli.INSTENS;
+    }
+4.枚举单例/*jdk内部实现反射和序列化的防御*/
+  public enum EnumSingleton {
+    INSTANCE;
+  }
+
+反射攻击
+原理：通过反射侵入单例类的私有构造方法并强制执行，使之产生多个不同的实例
+防御手段：要防御反射攻击，只能在单例构造方法中检测instance是否为null，如果已不为null，就抛出异常
+注意：双重检查锁实现无法做这种检查，静态内部类实现则是可以的。
+public class SingletonAttack {
+    public static void main(String[] args) throws Exception {
+        reflectionAttack();
+    }
+
+    public static void reflectionAttack() throws Exception {
+        Constructor constructor = DoubleCheckLockSingleton.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        DoubleCheckLockSingleton s1 = (DoubleCheckLockSingleton)constructor.newInstance();
+        DoubleCheckLockSingleton s2 = (DoubleCheckLockSingleton)constructor.newInstance();
+        s1.tellEveryone();
+        s2.tellEveryone();
+        System.out.println(s1 == s2);
+    }
+}
+
+序列化攻击/*这种攻击方式只对实现了Serializable接口的单例有效*/
+如果一个实现了Serializable/Externalizable接口的类可以在运行时实例化，
+那么就调用newInstance()方法，
+使用其默认构造方法反射创建新的对象实例，也就破坏了单例性。
+public class SingletonAttack {
+    public static void main(String[] args) throws Exception {
+        serializationAttack();
+    }
+
+    public static void serializationAttack() throws Exception {
+        ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("serFile"));
+        DoubleCheckLockSingleton s1 = DoubleCheckLockSingleton.getInstance();
+        outputStream.writeObject(s1);
+
+        ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(new File("serFile")));
+        DoubleCheckLockSingleton s2 = (DoubleCheckLockSingleton)inputStream.readObject();
+        s1.tellEveryone();
+        s2.tellEveryone();
+        System.out.println(s1 == s2);
+    }
+}
+/*防御序列化攻击*/
+将instance声明为transient，并且在单例中加入以下语句：重写反序列化方法 readResolve()
+public Object readResolve()  throws objectStreamException{
+    return instance;
+}
+
+                            枚举
+                            构造器只有一种带参的 一个参数是name，一个参数是索引下标ordinal
+                            
+                            1.枚举类可以实现一个或多个接口，使用enum定义的枚举类默认继承了java.lang.Enum类，而不是默
+                            认继承Object类，因此枚举类不能显示继承其他父类。
+                            其中java.lang.Enum类实现了java.lang.Serializable和java.lang.Comparable两个接口。
+                            2.使用enum定义、非抽象的枚举类默认会使用final修饰，因此枚举类不能派生子类。
+                            3.枚举类的构造器只能使用private访问控制符，如果省略了构造器的访问控制符，则默认使用private修饰；
+                              如果强制指定访问控制符，则只能指定private修饰符。
+                            4.枚举类的所有实例必须在枚举类的第一行显式列出，否则这个枚举类永远都不能产生实例。列出这些实例时，
+                            系统会自动添加public static final 修饰，无须程序员显式添加。
+                            5.枚举类默认提供了一个values()方法，该方法可以很方便地遍历所有的枚举值。 
+                              查看枚举对象名称Test.values()[index].name() 查看枚举对象下标： Test.values.ordinal() 
+    
+    
+    
+    
+    
+    
+    
+    
+    

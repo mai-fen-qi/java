@@ -1,0 +1,34 @@
+在spring MVC中，两者的作用都是将request里的参数的值绑定到contorl里的方法参数里的，区别在于，URL写法不同。
+
+使用@RequestParam时，URL是这样的：http://host:port/path?参数名=参数值
+使用@PathVariable时，URL是这样的：http://host:port/path/参数值
+例如：
+[java] view plain copy
+ 
+@RequestMapping(value="/user",method = RequestMethod.GET)  
+   public @ResponseBody  
+   User printUser(@RequestParam(value = "id", required = false, defaultValue = "0")  
+   int id) {  
+    User user = new User();  
+       user = userService.getUserById(id);  
+       return user;  
+   }  
+     
+   @RequestMapping(value="/user/{id:\\d+}",method = RequestMethod.GET)  
+   public @ResponseBody  
+   User printUser2(@PathVariable int id) {  
+       User user = new User();  
+       user = userService.getUserById(id);  
+       return user;  
+   }  
+
+ 
+
+ 
+
+上面两个方法，访问路径分别如下：
+
+ localhost：8080/user？id=1
+ 
+ localhost：8080/user/1
+

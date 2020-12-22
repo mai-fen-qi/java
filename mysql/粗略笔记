@@ -1,0 +1,67 @@
+
+io密集型 cpu密集型 
+
+.ibd 数据跟索引存在一起
+.myd 数据文件 myi索引文件
+130183198612021833  
+
+组合索引 默认是创建的升序
+explan 需要注意的地方 
+ 1. type 看优先级  system>const>ref>range>index>all
+ 2.Extra     using index（覆盖索引）using filesort（使用文件排序）
+  NULL（利用索引排序算法）using index condittion（使用索引的某些相关条件查询）
+   using where（使用where条件查询） using filesort（没有使用索引使用额外文件操作）
+ 3.ref 使用索引个数
+实际优化
+
+ 1.  尽量把计算放到业务层 而不是数据库操作 (函数也不会触发索引)
+ 2. 尽量使用主键查询,因为主键不会回表
+ 3.使用前缀索引  索引选择性在0-1之间（不重复的索引/数据记录总数）
+   select count（*） as cnt，left（city，4）as pref from citydemo group by city order by  cntdesc limit 10 ；
+  计算完成之后可以创建前缀索引
+  alter table citydemo add key（city（7））；
+  显示表的索引信息
+  show index from citydemo；olap系统 oltp系统（数据库） Cardinality列 基数统计（唯一值）
+ 4.union all 、in 、or  
+  union 有两个过程 所以不考虑（包含了 去重过程，所以尽量用union all 不去重）
+  
+  
+  exlsts 只能包含子查询 两个select相当于两个for循环 and优先级高于or 所以or要加小括号
+  select  * from emp  e where exists(select deptno form dept d where (deptno=20 or depton =30 )and e.deptno=d.deptno);
+ exists
+ 查询优化
+ 
+ 
+select a.*,b.*,c.* from aa as a inner join bb as b using(id)inner join cc as c using(cid)
+a表跟b表有相同字段id b表跟c表有相同字段cid
+show status  like ‘last——query——cost’ 查询最后一次查询的成本
+ 
+ strange 强制查询
+ show processlist
+ 
+ mylsam （不支持事务）两种锁 独占写锁（与排他不同） 和共享读锁 
+  lock table aa read； lock table nn write；unlock tables；
+  1.在进行写操作时  只有释放了锁 其余session才能进行读写操作
+  2. 在进行读锁时 只能多session读操作 但是不能进行写操作
+  3.加了读锁之后 只能读这个表，不能读其他的表
+  4.可以再加锁时候 末尾添加local关键字 表示锁住当前会话 （模仿事务功能）
+  show status like ‘table%’
+   如果Table——lock—waited 的value比较高，
+   表示存在比较严重的锁竞争情况
+   
+innodb 
+   acId（事务属性）
+共享锁（行锁）
+共享锁就是支持多个事务进行查询，但是不能进行写操作
+        读锁locak in share model
+        select * from table where id=1 locak in share model；
+排它锁
+         排它锁不能与其他锁并存，如果一个事务获取了一个数据航的排它锁，其他事物就不能在获取改行的锁，
+         只有当前获取了排它锁的事务可以对数据进行读取和修改
+        写锁update select * from table where id=1 for update；
+意向共享锁
+意向排它锁
+自增锁（表锁）
+      show variables like ‘innodb—autoinc—lock—mode’；
+     默认值是1 代表连续，事务未提交则id永久丢失
+间隙锁 

@@ -1,0 +1,156 @@
+1.设置签名 202006050036
+        git config --global user.name "maiSir"
+2.设置邮箱
+        git config --global user.email "77777777@qq.com"
+3.初始化本地仓库
+        进入本地仓库文件夹路径
+        git  init 查看隐藏文件 有.get文件夹        
+         
+4.常用命令
+        将文件提交到暂存区
+        git add 文件名
+        
+        将暂存区文件提交到本地库
+        git commit -m “注释内容” 文件名字
+        
+        status 查看工作状态
+        git status
+        
+        查看日志
+        方式1. git log
+           日志前后翻页
+           下一页： 空格 上一页：b 到最后一页 按q退出
+        方式2.git log --pretty=oneline 在一行显示
+        方式3.git log --oneline             在一行显示精简版
+        方式4.git reflog                         在一行显示 附加回退次数
+        
+        
+        前进、回退命令
+        git reset   --hard  索引   （ 根据索引前进后退、工作区、暂存区都重置）
+        git mixed --hard  索引    （重置暂存区）
+        git sift      --hard  索引    （工作区、暂存区都不重置）
+        
+        删除操作
+        
+        删除工作区的文件
+        git rm 文件名
+        
+       // 将删除操作同步到暂存区   
+       //git add 文件名     
+        
+        找回暂存区数据
+         git reset --hard 索引
+        
+        将删除操作同步到本地库
+        git commit -m "删除 某文件 " 某文件的名称
+                       
+        找回本地库删除的文件，实际上就是把索引回滚到之前的版本
+        git reset --hard 索引
+        
+        比对工作区与暂存区
+        git diff 文件名
+        比对所有工作区和暂存区
+        git diff
+        对比 暂存区和本地库
+        git diff 索引号 文件名     
+
+5.分支
+        查看分支
+        git branch  -v （前边带星的是当前分支）
+        
+        创建分支
+        git branch 分支名字
+        
+        切换分支
+        git checkout 分支名字
+        
+        删除分支
+        git branch -d 分支名字
+        git branch -D 分支名字 （强制删除）
+        
+        分支合并
+        ①.进入主分支
+         git checkout master         
+        ②合并分支     
+        git merge 分支名字
+        
+        查看冲突
+        cat 文件名
+        
+        解决冲突 
+        1.先提交
+        git add 文件名
+        2.合并之后 需进行提交
+        git commit -m “注释” (此时不加文件名)
+
+6.远程仓库
+          1.查看本地仓库有没有别名
+           git    remote    -v
+          2.为本地库添加远程库别名
+           git   remote  add rgn(别名)  https:github.com/aaa/aaa.git(远程仓库的地址)
+           3.删除 本地库的别名 
+           git remote remove rgn（别名）
+           4.push 文件到远程仓库
+           git push rgn(仓库别名)  master(分支名称)
+           5.克隆操作 （1.初始化本地仓库 2.将远程库完整克隆到本地3.替我们创建远程库的别名）
+           git clone  https:github.com/aaa/aaa.git(远程仓库)
+          5.邀请加入团队
+          ①进入github官网 ，登录项目管理员帐号，点击setting，再点击Manage access ，再点击invite a collaborator,输入邀请人账号，复制邀请连接
+          ②进入github官网 ，登录项目被邀请者帐号，将复制的链接粘贴在地址栏，点击加入团队即可
+          6.拉取操作pull操作（相当于fetch操作加上merge操作）
+          git fetch ogn（远程库别名） master（分支名字）（读取远程库文件到本地仓库）
+          git merge  ogn/master（远程库别名/分支名字）
+          一步到位 直接pull操作
+          git pull ogn（远程库别名） master（分支名字）
+
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+                

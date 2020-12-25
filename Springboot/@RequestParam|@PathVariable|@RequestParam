@@ -31,4 +31,12 @@
  localhost：8080/user？id=1
  
  localhost：8080/user/1
+ 
+ 
+ 
+ 
+ @RequestParam(defaultValue = "1")int pageIndex
+ 可以设置默任参数 （字符串）
+ 
+ 
 

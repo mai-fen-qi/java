@@ -11,3 +11,16 @@
 		PageHelper.startPage(pn, ps);	
 		return AccMapper.getall();
 		}
+
+
+
+
+这种可以设置默认参数 
+//查询所有用户并分页
+	@RequestMapping("list")
+	public String list(@RequestParam(defaultValue = "1")int pageIndex,@RequestParam(defaultValue = "3")int pageSize,Model model){
+		
+		model.addAttribute("acclist",accservice.findAllByPage( pageIndex, pageSize ));
+		
+		return "account/list";
+	}

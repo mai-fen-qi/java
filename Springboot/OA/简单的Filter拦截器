@@ -1,0 +1,80 @@
+
+package com.xiaocao.demo.filter;
+
+import java.io.IOException;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
+
+
+
+
+@Component
+@WebFilter("/**")
+public class AccFilter implements Filter {
+
+	private static final String[] IGNORE_URI = {"/index","/css","/js","/images","/acc/login","/acc/judgment"};
+	@Override
+	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
+			throws IOException, ServletException {
+		HttpServletRequest request = (HttpServletRequest)req;
+		HttpServletResponse response = (HttpServletResponse)resp;
+		
+		String uri =request.getRequestURI();
+		System.out.println(uri+" ********");
+		boolean pass = passUri(uri,response);
+		if(pass) {
+			//在 Ignore里面
+			System.out.println("在Ignore里面");
+			chain.doFilter(request, response);
+			return ;
+		}else {
+			//是否为登录用户 
+			Object acc = request.getSession().getAttribute("Account");
+			if(acc == null) {
+				//跳转登录界面
+				System.out.println("跳转登录");
+				response.sendRedirect("/acc/login");
+			}else {
+				//登录用户
+				System.out.println("登录用户");
+				chain.doFilter(request, response);
+			}
+			
+		}
+	}
+	private boolean passUri(String uri,HttpServletResponse response) {
+
+		if(uri.equals("/")) {
+				try {
+					System.out.println("*********");
+					response.sendRedirect("/index");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return true;
+			}
+		for(String val :IGNORE_URI) {
+			//这样写得好处是 只判断前边一部分的字符
+			
+			if(uri.startsWith(val)) 
+				return true;
+		}
+		
+		return false;
+	}
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+		System.out.println("启动了filter");
+		Filter.super.init(filterConfig);
+	}
+
+}

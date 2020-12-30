@@ -1,0 +1,21 @@
+
+更完善的分页 用pageHlper+pageInfo
+1.创建 Controller
+//查询所有用户并分页
+	@RequestMapping("page")
+	public String list(@RequestParam(defaultValue = "1")int pageIndex,@RequestParam(defaultValue = "2")int pageSize,Model model){
+		
+		PageInfo<Account> page = accservice.findAllByPage( pageIndex, pageSize );
+		
+		model.addAttribute("page",page);
+		
+		return "account/list";
+	}
+2.	
+	
+	
+	
+	
+	
+
+

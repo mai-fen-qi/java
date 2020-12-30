@@ -1,16 +1,20 @@
 1.https://mvnrepository.com/ 到maven 中央仓库
 查找pagehelper-spring-boot-starter 最新架包
 
-2.创建 Controller
+
+粗糙的分页
+1.创建 Controller
 @RequestMapping("page")
 	public Object page(@RequestParam(required = false) Integer pn,@RequestParam(required = false)Integer ps) {
 				return server.findBypage(pn,ps);
 	}
-	3.创建 service
-	public Object findBypage(Integer pn, Integer ps) {
-		PageHelper.startPage(pn, ps);	
-		return AccMapper.getall();
-		}
+	
+	
+2.创建 service
+public Object findBypage(Integer pn, Integer ps) {
+	PageHelper.startPage(pn, ps);	
+	return AccMapper.getall();
+	}
 
 
 
@@ -24,3 +28,5 @@
 		
 		return "account/list";
 	}
+	
+	

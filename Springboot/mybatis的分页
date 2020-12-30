@@ -1,0 +1,111 @@
+1.https://mvnrepository.com/ 到maven 中央仓库
+查找pagehelper-spring-boot-starter 最新架包
+
+
+粗糙的分页
+1.创建 Controller
+@RequestMapping("page")
+	public Object page(@RequestParam(required = false) Integer pn,@RequestParam(required = false)Integer ps) {
+				return server.findBypage(pn,ps);
+	}
+	
+	
+2.创建 service
+public Object findBypage(Integer pn, Integer ps) {
+	PageHelper.startPage(pn, ps);	
+	return AccMapper.getall();
+	}
+
+
+
+
+这种可以设置默认参数 
+//查询所有用户并分页
+	@RequestMapping("list")
+	public String list(@RequestParam(defaultValue = "1")int pageIndex,@RequestParam(defaultValue = "3")int pageSize,Model model){
+		
+		model.addAttribute("acclist",accservice.findAllByPage( pageIndex, pageSize ));
+		
+		return "account/list";
+	}
+	
+	
+更完善的分页 用pageHlper+pageInfo
+1.创建 Controller
+//查询所有用户并分页
+	@RequestMapping("page")
+	public String list(@RequestParam(defaultValue = "1")int pageIndex,@RequestParam(defaultValue = "2")int pageSize,Model model){
+		
+		PageInfo<Account> page = accservice.findAllByPage( pageIndex, pageSize );
+		
+		model.addAttribute("page",page);
+		
+		return "account/list";
+	}
+2.	创建Service
+	
+	public PageInfo<Account> findAllByPage(int pageIndex,int pageSize ) {
+
+		PageHelper.startPage(pageIndex, pageSize);
+		AccountExample example = new AccountExample();
+		List<Account> acclist = accmapper.selectByExample(example);
+		
+		//acclist是查询出来的所有用户信息，第二个参数是页码数量
+		return new PageInfo<Account>(acclist,3);
+	}
+	
+3.html
+
+[[${page}]]  这个是显示page对象，方便查看信息
+<!--  列表       开始   ↓ -->
+<table class="table table-hover">
+ <tr>  
+ 	<th>序号</th>
+ 	<th>工号</th>
+ 	<th>loginName</th>
+ 	<th>nickName</th>
+ 	<th>age</th>
+ 	<th>location</th>
+ 	<th>role</th>
+ 	<th>操作</th>
+ </tr>
+ 
+ <tr th:each="account : ${page.list}">
+ 	<td th:text="${accountStat.count}"></td>
+ 	<td th:text="${account.id}">工号</td>
+ 	<td th:text="${account.loginName}">loginName</td>
+ 	<td th:text="${account.nickName}">nickName</td>
+ 	<td th:text="${account.age}">age</td>
+ 	<td th:text="${account.location}">location</td>
+ 	<td th:text="${account.role}">role</td>
+ 	<td>操作</td>
+ 	
+ 
+ </tr>
+</table>
+
+
+<nav align="center" aria-label="Page navigation">
+  <ul class="pagination">
+  <!-- 上一页 -->
+ <li th:class="${page.prePage} == 0?'disabled' :'' ">
+      <a th:href="@{${page.prePage} == 0?'javascript:void(0);' :'/acc/page?pageIndex='+${page.prePage}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+
+    <li th:each="pageIndex : ${ page.navigatepageNums }"><a th:href=" @{'/acc/page?pageIndex='+${pageIndex}} ">[[${pageIndex}]]</a></li>
+   
+    <!-- 下一页 -->
+    
+    <li th:class="${page.prePage} == 0?'disabled' :'' ">
+      <a th:href=" @{${page.pageNum} == ${page.pages}?'javascript:void(0)' : '/acc/page?pageIndex='+${page.nextPage}}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<!--  列表       结束   ↑ -->	
+	
+	

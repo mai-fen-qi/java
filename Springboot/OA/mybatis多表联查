@@ -1,0 +1,97 @@
+注意点 1. 多表联查 可能出现只返回一条数据 或少数据 原因：id 字段重复 无法匹配
+
+多表联查 操作  xml文件尽量只增不减
+
+1.对 结果集对象 添加 其他对象的 属性
+
+public class Account implements Serializable {
+    private Integer id;
+
+    private String loginName;
+
+    // 角色
+    private List<Role> roleList;
+    
+    // 具体的权限
+    private List<Permission> permissionList;
+    
+    }
+2. 添加自定义结果集
+
+
+ <!--  自定义： 包含一对多关系 包含两个集合   roleList  permissionList-->
+  <resultMap type="com.xiaocao.demo.entity.Account" id="selectByPermissionResultMap">
+  
+    <id column="aid" jdbcType="INTEGER" property="id" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="age" jdbcType="INTEGER" property="age" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+    <result column="role" jdbcType="VARCHAR" property="role" />
+  
+	  <collection property="roleList" ofType="com.xiaocao.demo.entity.Role">
+	  	
+		  <id column="rid" jdbcType="INTEGER" property="rid" />
+	      <result column="rname" jdbcType="VARCHAR" property="rname" />
+	  </collection>
+	  <collection property="permissionList" ofType="com.xiaocao.demo.entity.Permission">
+		  	
+	    <id column="pid" jdbcType="INTEGER" property="id" />
+	    <result column="uri" jdbcType="VARCHAR" property="uri" />
+	    <result column="pname" jdbcType="VARCHAR" property="name" />
+	    <result column="c" jdbcType="BIT" property="c" />
+	    <result column="r" jdbcType="BIT" property="r" />
+	    <result column="u" jdbcType="BIT" property="u" />
+	    <result column="d" jdbcType="BIT" property="d" />
+	  </collection>
+  
+  </resultMap>
+  
+ 3. 手写sql 多表联查 最好先在数据库进行查询 保证sql语句正确
+ 
+  
+  <!-- 账户表 关联 用户表 关联 权限表 -->
+  <select id="selectAllBypage" resultMap="selectByPermissionResultMap">
+  <!-- 
+  select a.id,a.login_name,a.passworld ,a.nick_name ,a.age,a.location ,
+	r.rid,r.rname,
+	per.id as pid,per.uri,per.name as pname ,per.c,per.r,per.u,per.d
+	from account as a 
+	inner join account_role as acr 
+	on a.id=acr.account_id  
+	inner join role as r  on acr.role_id = r.rid
+	inner join role_permission as rope on r.rid=rope.role_id
+	inner join permission as per on rope.permission_id=per.id
+	
+	-->
+	 SELECT
+	a.id as aid, 
+	a.login_name ,
+	a.passworld,
+	a.nick_name,
+	a.age,
+	a.location,
+	a.role,
+	r.*,
+	p.id as pid,
+	p.uri,
+	p.name,
+	p.c,
+	p.r,
+	p.u,
+	p.d
+
+FROM account as a 
+	inner join account_role as ar 
+		on a.id = ar.account_id
+    inner join role as r 
+		on ar.role_id = r.rid
+        
+	left join role_permission rp 
+		on r.rid =rp.role_id
+	left join permission p 
+		on p.id = rp.permission_id
+	
+  </select>
+  

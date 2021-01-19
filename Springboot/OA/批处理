@@ -1,0 +1,29 @@
+1.实体类
+public class Role implements Serializable {
+    private Integer id;
+
+    private String name;
+
+    private List<Permission> permissions;
+}
+2.更改yaml 添加allowMultiQueries=true 允许数据库一次操作 执行多条sql 
+spring:  datasource:    url:   jdbc:mysql://localhost:3306/ssm?allowMultiQueries=true
+
+3.mapper里添加方法
+ void addPermissions(int id, int[] permissions);
+ 
+ 
+4.mapper.xml文件中 添加insert方法
+<insert id="addPermissions">
+ 	delete from role_permission where role_id = #{id};
+ 	
+  	insert into role_permission (role_id,permission_id) values 
+  	  		<foreach collection="permissions" item="p" separator="," >
+  			(
+  				#{id},#{p}
+  			)
+  		</foreach>
+  </insert>
+  
+  
+  

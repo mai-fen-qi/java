@@ -1,0 +1,92 @@
+1. checkbox 通过thymeleaf 取值
+
+
+<form  id="p" >
+<table class= "table table-hover"  >
+	<tr>
+	  <th>序号</th>
+	  <th>uri</th>
+	  <th>name</th>
+	  <th>c</th>
+	  <th>r</th>
+	  <th>u</th>
+	  <th>d</th>
+	  <th>操作</th>
+	</tr>
+
+  <tr>
+    <td><input readonly  name="id" type="text" th:value="${per.id} " /></td>
+    
+    <td><input name="uri" type="text" th:value="${per.uri}" /></td>
+    <td><input name="name" type="text" th:value="${per.name}" /></td>
+    
+   <td><input type="checkbox" id="c" th:checked="${per.c}==null?'false':${per.c}"> c
+    </td>
+    <td><input type="checkbox" id="r" th:checked="${per.r}==null?'false':${per.r}"> r
+    </td>
+    <td><input type="checkbox" id="u" th:checked="${per.u}==null?'false':${per.u}"> u
+    </td>
+    <td><input type="checkbox" id="d" th:checked="${per.d}==null?'false':${per.d}"> d
+    </td>
+    
+    
+    
+    <td><a href="javascript:smt();">提交</a></td>
+    
+  </tr>
+</table>
+</form>
+
+
+
+<script type="text/javascript">
+
+function smt(){
+	
+	var formObject = {};
+	var data = $("#p").serializeArray();
+	$.each(data,function(i,item){
+		formObject[item.name] = item.value;
+	});
+	//获取多选框的参数值
+	formObject["c"] = $("#c").is(':checked');
+	formObject["r"] = $("#r").is(':checked');
+	formObject["u"] = $("#u").is(':checked');
+	formObject["d"] = $("#d").is(':checked');
+
+	console.log(" form +"+ JSON.stringify(formObject));
+	
+	/*
+	发送请求
+	*/
+	
+	var uri = "/api/v1/manger/per/add" ;
+	/*需要发送json对象*/
+			/*
+			$.post(uri,formObject,function(data){
+				console.log(data)
+			})
+			*/
+	/*ajax 异步请求 提交 可发送json数据*/
+	$.ajax({
+		type : "post",
+		url  : uri ,
+		contentType:"application/json",
+		data : JSON.stringify(formObject),
+		dataType : "json" ,
+		
+		success:function(msg){
+			console.log("success")
+			console.log(msg)
+		},
+		error:function(msg){
+			console.log("error+++")
+			console.log(msg)
+		}
+	})
+	
+}
+	
+	
+
+</script>

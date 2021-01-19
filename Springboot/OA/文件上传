@@ -1,0 +1,47 @@
+1.创建html 
+
+
+<form  action="/acc/fileUploadController" method="post" enctype="multipart/form-data">
+<tr>
+  <td>
+		上传文件：<input type="file" name="filename"/><br/>
+		<input type="submit"/>
+  </td>
+</tr>
+</form>
+
+   
+2.创建ctrl 对传过来的文件进行处理
+因为用了thymeleaf模版 所以返回的是字符串 会跳转到manger文件夹下的profile这个html文件
+@RequestMapping("/fileUploadController")
+	public String fileUpload (MultipartFile filename,HttpServletRequest request) {
+		
+		//获取存放在session中的account这个账户信息
+		Account account = (Account)request.getSession().getAttribute("account");
+		
+		try {
+		
+		// 当前项目的相对路径
+		    //File path = new File(ResourceUtils.getURL("classpath:").getPath());
+        //File upload = new File(path.getAbsolutePath(), "static/uploads/");
+        
+        // 指定系统存放文件的目录  放在磁盘上 绝对路径
+		// 文件转存
+		// 文件重名
+        filename.transferTo(new File("f:/path/uploads/"+filename.getOriginalFilename()));
+        
+        //account.setPassword(password);
+        //account.setLocation(filename.getOriginalFilename());
+        
+        //accountSrv.update(account);
+        
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    
+		return "manger/profile";
+	}

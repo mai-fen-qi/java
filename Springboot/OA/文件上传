@@ -23,7 +23,7 @@
 		
 		// 当前项目的相对路径
 		    //File path = new File(ResourceUtils.getURL("classpath:").getPath());
-        //File upload = new File(path.getAbsolutePath(), "static/uploads/");
+                    //File upload = new File(path.getAbsolutePath(), "static/uploads/");
         
         // 指定系统存放文件的目录  放在磁盘上 绝对路径
 		// 文件转存
@@ -31,9 +31,10 @@
         filename.transferTo(new File("f:/path/uploads/"+filename.getOriginalFilename()));
         
         //account.setPassword(password);
-        //account.setLocation(filename.getOriginalFilename());
-        
-        //accountSrv.update(account);
+	//设置account 的图像位置参数
+        account.setLocation(filename.getOriginalFilename());
+        //更新account 的图像位置参数
+        accountSrv.update(account);
         
 		} catch (IllegalStateException e) {
 			// TODO Auto-generated catch block
@@ -45,3 +46,9 @@
     
 		return "manger/profile";
 	}
+	3.因为是绝对路径 所以需要配置 yaml 
+	
+	
+	#mybatis配置项目静态目录
+        spring.web.resources.static-locations=classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:F:/path/uploads/
+

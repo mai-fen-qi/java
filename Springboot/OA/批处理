@@ -1,9 +1,10 @@
+例如 对角色和权限的关系表 进行 一次性插入 一个角色 对应多个权限的功能
 1.实体类
 public class Role implements Serializable {
     private Integer id;
 
     private String name;
-
+    //权限实体类
     private List<Permission> permissions;
 }
 2.更改yaml 添加allowMultiQueries=true 允许数据库一次操作 执行多条sql 
@@ -13,8 +14,27 @@ spring:  datasource:    url:   jdbc:mysql://localhost:3306/ssm?allowMultiQueries
  void addPermissions(int id, int[] permissions);
  
  
-4.mapper.xml文件中 添加insert方法
-<insert id="addPermissions">
+4.mapper.xml文件中 添加insert方法 添加结果集
+
+<!--  自定义结果集 角色跟权限关系表映射-->
+   <resultMap id="RoleResultMap" type="com.xiaocao.demo.entity.Role">
+    <id column="rid" jdbcType="INTEGER" property="rid" />
+    <result column="rname" jdbcType="VARCHAR" property="rname" />
+     
+    <collection property="permission" ofType="com.xiaocao.demo.entity.Permission">
+		  	
+	    <id column="pid" jdbcType="INTEGER" property="id" />
+	    <result column="uri" jdbcType="VARCHAR" property="uri" />
+	    <result column="pname" jdbcType="VARCHAR" property="name" />
+	    <result column="c" jdbcType="BIT" property="c" />
+	    <result column="r" jdbcType="BIT" property="r" />
+	    <result column="u" jdbcType="BIT" property="u" />
+	    <result column="d" jdbcType="BIT" property="d" />
+	 </collection>
+  </resultMap>
+<!-- 自定义sql 插入角色与权限的  关系表  -->
+
+	  <insert id="addPermissions">
  	delete from role_permission where role_id = #{id};
  	
   	insert into role_permission (role_id,permission_id) values 
@@ -24,6 +44,69 @@ spring:  datasource:    url:   jdbc:mysql://localhost:3306/ssm?allowMultiQueries
   			)
   		</foreach>
   </insert>
+  <!-- 用户通过角色表进行 用户的权限管理 界面时 把原有的权限关系查出来-->
+  <!-- 自定义多表联查 角色表 角色权限关系表 权限表 -->	
+  <select id="findById" resultMap="RoleResultMap">
+  	
+  select r.rid,r.rname ,p.id as pid ,p.name as pname from role as r 
+inner join role_permission as rp on r.rid=rp.role_id
+inner join  permission as p on p.id=rp.permission_id
+where r.rid=#{id}
+  
+  </select>
+  
+  5.html 发送请求
   
   
+<h1>角色权限</h1>
+<a class="btn btn-info" href="/role/page">返回列表</a><br/>
+<form id="add">
+名称： <input type="text" name="name"  th:value="${role}==null?'':${role.rname}"   >
+<br/>
+	<div id="append"></div>
+	<br>
+	<input hidden="hidden"  name="id"  th:value="${role.rid}==null?'':${role.rid}   ">
+<br/>
+  <br/>
   
+  <!--  把所有数据取出来  循环取
+  		item.id 
+  			account.plist
+  			     a.id == item.id 
+   -->
+<div style="display: flex;" >
+
+	<span th:each="item:${pList}">
+		<input type="checkbox" th:id="${item.id}" name="permissions"   th:value="${item.id}"
+		th:checked="${item.id}==0?'false':'true'" >
+		
+		<label>[[${item.name}]]</label>
+	</span>
+
+</div>
+</form>
+<a class="btn btn-default" href="javascript:add();">添加</a>
+
+
+<script type="text/javascript">
+function add(){
+		
+		var data = $("#add").serializeArray();
+		
+		var formObject = {};
+		
+		 $.each(data,function(i,item){
+	            formObject[item.name] = item.value;
+	        });
+
+		 console.log(data);
+		 console.log(formObject);
+		 console.log( JSON.stringify(formObject));
+		 
+		 $.post("/role/rolePerAdd",data,function(data){
+			 console.log("data+++++");
+			 console.log(data)
+		 })
+	}
+
+</script>  

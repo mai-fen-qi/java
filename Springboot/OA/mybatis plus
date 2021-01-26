@@ -1,0 +1,69 @@
+只能对单表进行操作 多表操作依旧需要自己写mapper.xml映射文件 接口类
+
+1.创建实体类
+ public class Account implements Serializable {
+    private Integer id;
+
+    private String loginName;
+
+    }
+
+2.引入依赖
+        <dependency>
+              <groupId>com.baomidou</groupId>
+              <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.1.2</version>
+        </dependency>
+        
+           3. 创建Mapper接口 
+
+           public interface AccountMapper extends BaseMapper<Account> {
+
+          }
+          4.在启动类添加mapperscan注解
+            此时已经可以通过 ctroller 调用mapper借口 跟数据库交互了
+
+5.如果调用service借口 因为ctroller直接调mapper显然不太合理
+
+      创建接口类 继承mybatis plus 的底层接口类
+      public interface IAccountService  extends IService<Account>{
+
+      }
+
+     创建实现类
+     @Service
+    public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account>  implements IAccountService {
+
+    }
+    
+  6.控制类调用接口
+    
+@Controller
+@RequestMapping("/city")
+public class MainController {
+
+	
+	
+	
+	@Autowired
+	AccountMapper mapper;
+	
+	@Autowired
+	IAccountService accountSrv;
+	
+	@RequestMapping("/list")
+	public String list(Model map) {
+		
+    两种实现nybatis plus 的方式
+    //1.直接调用mapper接口
+		Account account = mapper.selectById(1);
+		System.out.println("account:" + account . getLoginName());
+    //2.通过service接口实现功能
+    System.out.println("accountSrv.count() : " + accountSrv.count());
+		return "list";
+		// mapper.xml  @注解两种方式进行多表关联查询
+	}
+	
+
+}
+  

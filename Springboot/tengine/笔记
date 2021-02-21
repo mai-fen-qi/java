@@ -1,0 +1,204 @@
+nginx 是异步的   一个进程可以对应多个连接（万级别）
+apache 是同步多进程模型 一个连接对应一个进程会有io阻塞
+
+apache 如果进程数超过cup内核数 会互相插队
+nginx   如果进程数超过cpu内核数 只会监控状态 io会直接推给操作系统内核
+neginx 解决的问题：
+      高 并发 
+      负载均衡
+      高可用
+      虚拟主机
+      伪静态
+      动静分离（静态文件存放在nginx）
+  linux搭建tegine
+     1. 需要先进入configure 进行配置
+       安装c语言编译器gcc  -y 就是全部都是yes 都安装
+      yum install gcc openssl-devel pcre-devel zlib-devel -y 
+      2.可以把一些默认没有安装的模块进行编译 
+      才可以安装到niginx 下边是安装到/usr/local/tengen下
+      .configure --prefix=/usr/local/tengeine
+       3. 
+       make && make install
+       4.可以使用tegine了
+       进入tegine目录 之后 cd sbin 然后 ./nginx 就启动了
+       5.停掉nginx
+        先查看进程 ps -ef | grep nginx  然后杀死进程 kill  -9 3987 kill -9 3988
+      6. 配置启动脚本shell脚本
+      拷贝附件的nginx启动脚本的文本内容到 /etc/init.d/nginx这个文件中
+      没有的话需要手动创建 vi nginx 进行编辑
+      然后对nginx文件进行赋权 这样才能启动 chmod 777 ./nginx 777代表最高权限
+       然后 就可以 service nginx start 启动了
+       
+       7.需要修改用户组 生产环境不能用root去装
+       
+       8.对登录用户,
+         进程数(一般跟cpu内核数绑定),
+         一个进程可以建议的线程数(worker_connections )
+         进行配置
+        cd /usr/local/tengine/conf 下的 nginx.conf
+         进程数*线程数要小于 系统能打开的文件句柄数
+         文件句柄数在 cat /proc/sys/fs/file -nr 查看
+         修改句柄数 ulimit -SHn 655335 句柄有点像c的指针
+      9.  events 是基于事件的
+      http 里边
+	include （3个作用 1.可以引入其他配置文件 2.文件对应类型映射列表 3.返回的文件扩展名）
+      	
+	default_type 所有识别不出来的文件 默认执行格式
+      
+	tcp_nopush 开了提高网络传输 批处理数据 一次传输一段数据
+       
+	sendfile 设置异步网络io
+      sendfile  on   这个样快 因为少了一次读取文件
+           app发送指令给操作系 统内核        
+           内核加载文件 然后直接推给nic
+      sendfile off  性能低 但不会因为文件传输太快  文件只解析一半的情况
+           app读取文件 app再把文件推给内核 内核在推给nic
+
+               gzip 开启压缩输出
+	
+     server 配置虚拟主机
+             {  listen 80； 端口号
+	server_name localhost ；主机号或域名  
+
+	配置虚拟目录
+		root 是关键字 只能有一个 其他的写
+		 localtion / {  /代表 只要以/开头的 都进这个目录的规则
+		 root html； root 可以写绝对路径 也可以写相对路径：进入nginx目录的html文件夹下
+		 index index.html index.htm 默认页
+		}
+
+		 localtion = / { =和/之间有空格 只有/的  才进这个目录的规则
+		 root html； root 可以写绝对路径 也可以写相对路径：进入nginx目录的html文件夹下
+		 index index.html index.htm 默认页
+		}
+		   / doc开始的都进入这里 因为/doc是精确匹配  /是模糊匹配
+		 localtion /doc {  /代表 只要以/开头的 都进这个目录的规则
+		 alita html； 
+		 index index.html index.htm 默认页
+		}
+             }
+
+
+反向代理   反向的意思： 服务器被用户访问 （站在服务器的角度）
+	
+负载均衡
+  1.先配置 upstream
+  跟server同级
+  upstream tomcats{       默认轮寻（一人一下）
+	server 192.168.150.11:8080;    第一台Tomcat
+	server 192.168.150.12:8080;    第二台tomcat
+	}
+ 2. 修改location
+	location /{                   proxy_pass http://tomcats; http 是协议 Tomcats是占位符 内容从upstream找 }
+
+3.负载均衡-循环策略
+       1.默认轮寻  一个服务器一次
+       2.设置权重    11服务器出现一次 12 服务器出现10次
+ 	upstream tomcats{       
+	server 192.168.150.11:8080 weight=1;=左右不能有空格    
+	server 192.168.150.12:8080 weight=10;     
+	}
+       3.max_conns
+	server 192.168.150.11:8080 weight=1 max_conns=800; 最大连接数800； 
+       4.max_fails 失败多少次认为主机已经挂掉，提出，公司资源少的话一般设置为2-3次，多的话设置一次。
+	  server 192.168.150.11:8080 weight=1 max_conns=800 max_fails=1;
+       5.fail_timeout
+	   server 192.168.150.11:8080 weight=1 max_conns=800 max_fails=3 faile_timeout=20 ;
+	   掉在20秒的请求某一应用失败3次，认为该应用宕机，然后等待20s，这期间内不会再把新请求发送到宕机应用，
+	   而直接发到正常的那一台，时间到后再有请求进来继续尝试连接宕机，应用切紧尝试1次，如果还是失败，则继续等	   待30s..依次循环，直到恢复
+       6.负载均衡算法 ip哈希（一般不用 可能会造成访问倾斜） uri哈希
+
+   	IPhash 第一次访问的服务器是什么 就一直只能访问这个服务器
+	upstream tomcats{  
+	ip_hash;     
+	server 192.168.150.11:8080 weight=1;=左右不能有空格    
+	server 192.168.150.12:8080 weight=10;     
+	}		
+ 	
+
+动静分离	
+	
+
+url 的重定向
+		如果是https的 会通过nginx反向代理服务器将302跳转给用户 然后用户直接访问百度 地址栏会发生改变
+		如果是http的  会通过nginx反向代理服务器 将haha网站的html 内容传给用户 地址栏不发生改变 
+		 localtion /baidu {  
+ 		  proxy_pass https:// www.baidu.com;
+		  proxy_pass http:// www.haha.com;
+		 
+		}
+用户认证访问
+
+	模块ngx_http-auth_basic_module 允许使用http基于认证 协议验证用户名和密码来限制对资源的访问
+		localtion ~(.*)\.avi${ ~代表模糊匹配 （）之内是正则表达式 、代表转义 ￥代表结束
+	auth_basic 'closed site‘;  错误提示
+	auth_basic_user_file users;  用户名密码的文件（字典）存放的位置 默认前缀nginx下的conf下找
+		} 
+
+	编写 用户名密码的字典
+	httpd-tools        
+  	yum  install  httpd 
+	htpasswd -c -d  /usr/local/users zhangsan    
+	
+nginx访问状态监控
+
+	location /basic_status {
+	stub_status  on;
+	}
+健康检查模块
+  	location /status{
+	check_status;
+	}
+	upstream tomcats{       
+	server 192.168.150.11:8080 weight=1;=左右不能有空格    
+	server 192.168.150.12:8080 weight=10;     
+	check interval=3000 rise=2 fall=5 timeout=1000,type=http;	 连接失败五次踢出该轮寻
+	check_http_send "HEAD / HTTP/1.0\r\n\r\n";
+	check_http_expect_alive http_2xx http_3xx;
+
+	}
+
+
+缓存http_proxy  本地磁盘缓存 （nginx不支持内存缓存  可以用第三方插件）
+  缺点: 用磁盘存储 速度不如内存缓存
+  内嵌的功能 速度很快
+  改善方法：将整个磁盘 load到内存里 例如 通过孟塔 将磁盘文件映射到 内存目录
+
+
+
+session共享
+	1. 到tomcat的lib下，jar包见附件
+	   每个tomcat下的context.xml中加入
+	<Manger  
+	ClassName="de.javakaffee.web.msm.MemcachedBackupSessionManager"
+	memcachedNodes="n1:192.168.43.151:11211"
+	sticky="false"
+	lockingMode="auto"
+	sessionBackupAsync="false"
+	requestUriIgnorePattern="\.(icoipng|gif|jpg|css|js)$"
+	sessionBackupTimeout="1000"
+	transcoderFactoryClass="de.javakaffe.web.msm.serializer.kryo.kryoTranscoderFactory"
+	/>
+
+安装memcached
+ 安装libevebt 安装memcached
+ yum -y install memcached
+启动memcached
+      memcached -d -m 128 -u root -l 192.168.43.151 -p 11211 -c -p /tmp/memcached.pid
+          以守护方式运行  内存	用户	      端口号						    memcached-tool 192.168.42.15:11211 连接命令 					
+
+
+
+
+
+
+
+
+
+
+      设置某个目录下的文件都需要下载
+      
+      
+      
+      
+      

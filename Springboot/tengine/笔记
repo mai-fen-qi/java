@@ -61,7 +61,7 @@ neginx 解决的问题：
 	server_name localhost ；主机号或域名  
 
 	配置虚拟目录
-		root 是关键字 只能有一个 其他的写
+		root 是关键字 只能有一个 其他的写alias
 		 localtion / {  /代表 只要以/开头的 都进这个目录的规则
 		 root html； root 可以写绝对路径 也可以写相对路径：进入nginx目录的html文件夹下
 		 index index.html index.htm 默认页
@@ -77,6 +77,11 @@ neginx 解决的问题：
 		 index index.html index.htm 默认页
 		}
              }
+	     
+	     配置列表
+	     locatiuon /a{
+	       autoindex on; 需要的虚拟目录下 添加这个配置就会显示列表
+	     }
 
 
 反向代理   反向的意思： 服务器被用户访问 （站在服务器的角度）

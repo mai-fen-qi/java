@@ -118,5 +118,13 @@ scp a.tar.gz 192.168.150.12:/'pwd'   把本机的a文件传送到150.12服务器
   
  挂载 umount    
 
+cent os 7 
+防火墙关闭 systemctl stop firewalld
+禁止防火墙自启动 systemctl disable firewalld 
+查看防火墙状态 systemctl status firewalld
+启动防火墙 systemctl strt firewalld
+
+
+
 
      

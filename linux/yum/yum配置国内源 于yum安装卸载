@@ -1,5 +1,7 @@
  CentOS7怎么更换yum源
 
+
+
 163yum源：
 1）备份当前yum源防止出现意外还可以还原回来
 cd /etc/yum.repos.d/
@@ -30,3 +32,26 @@ yum update
 
 
 下载的文件存放在root目录下
+
+1、查看系统默认安装的yum
+
+# rpm -qa|grep yum
+2、卸载yum
+
+# rpm -e yum-fastestmirror-1.1.16-14.el5.centos.1 yum-metadata-parser-1.1.2-3.el5.centos yum-3.2.22-33.el5.centos
+3、重新安装yum
+
+这里可以通过wget 从网上下载相关包安装，也可以挂载系统安装光盘进行安装，这里选择挂载系统安装光盘进行安装。
+
+# mount /dev/cdrom /mnt/cdrom/
+
+# rpm -ivh yum-3.2.22-33.el5.centos.noarch.rpm yum-fastestmirror-1.1.16-14.el5.centos.1.noarch.rpm yum-metadata-parser-1.1.2-3.el5.centos.i386.rpm
+
+# yum -v
+
+yum 的基础安装包包括：
+
+    yum　　//RPM installer/updater
+    yum-fastestmirror　　//Yum plugin which chooses fastest repository from a mirrorlist
+    yum-metadata-parser　　//A fast metadata parser for yum
+

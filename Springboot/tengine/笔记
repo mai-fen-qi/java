@@ -27,7 +27,7 @@ neginx 解决的问题：
        4.可以使用tegine了
        进入tegine目录 之后 cd sbin 然后 ./nginx 就启动了
        5.停掉nginx
-        先查看进程 ps -ef | grep nginx  然后杀死进程 kill  -9 3987 kill -9 3988
+        先查看进程 ps -ef | grep nginx master是主进程 worker是工作进程  然后杀死进程 kill  -9 3987 kill -9 3988
       6. 配置启动脚本shell脚本
       拷贝附件的nginx启动脚本的文本内容到 /etc/init.d/nginx这个文件中
       没有的话需要手动创建 vi nginx 进行编辑

@@ -122,6 +122,18 @@ neginx 解决的问题：
  	
 
 动静分离	
+
+	1.添加新 local 设置正则表达匹配规则
+	      先将所有请求都打到tengine服务器 
+	    	  location / {
+		         proxy_pass http://192.168.150.11:803;
+            }
+   
+     拦截所有静态文件请求 转到本服务器的某一目录查找 不在经过tomcat 
+     location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|html|htm|css|js)$ {
+            root  /var/data/www1/;
+	       }
+      2.将系统开发时需要的静态文件传输到 指定目录	
 	
 
 url 的重定向

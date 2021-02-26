@@ -90,6 +90,22 @@ neginx 解决的问题：
 
 
 反向代理   反向的意思： 服务器被用户访问 （站在服务器的角度）
+
+    url 的重定向（反向代理）
+		如果是https的 会通过nginx反向代理服务器将302跳转给用户 然后用户直接访问百度 地址栏会发生改变
+		如果是http的  会通过nginx反向代理服务器 将haha网站的html 内容传给用户 地址栏不发生改变 
+		 location /baidu/  {
+	           proxy_pass  https://www.baidu.com/ ;
+	       }
+反向代理配合upstream使用
+		upstream httpds {
+		    server 127.0.0.1:8050       weight=10 down;
+		    server 127.0.0.1:8060       weight=1;
+		     server 127.0.0.1:8060      weight=1 backup;
+		}
+		 location /baidu/  {
+	           proxy_pass  https://httpds;
+	       }
 	
 负载均衡
   1.先配置 upstream
@@ -141,14 +157,7 @@ neginx 解决的问题：
       2.将系统开发时需要的静态文件传输到 指定目录	
 	
 
-url 的重定向
-		如果是https的 会通过nginx反向代理服务器将302跳转给用户 然后用户直接访问百度 地址栏会发生改变
-		如果是http的  会通过nginx反向代理服务器 将haha网站的html 内容传给用户 地址栏不发生改变 
-		 localtion /baidu {  
- 		  proxy_pass https:// www.baidu.com;
-		  proxy_pass http:// www.haha.com;
-		 
-		}
+
 用户认证访问
 
 	模块ngx_http-auth_basic_module 允许使用http基于认证 协议验证用户名和密码来限制对资源的访问

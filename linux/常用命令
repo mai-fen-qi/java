@@ -22,7 +22,8 @@ mv   移动  mv /user/a.html  /user/local/
         把user下的a.html 移动到user的local文件夹下
 
 netstat -tunlp | grep 端口号  查看端口号
-        
+
+ps -ef | grep nginx         查看服务占用端口号
 pwd 显示当前工作目录 pwd
 
 ①rpm -qa : 查询已经安装的所有包

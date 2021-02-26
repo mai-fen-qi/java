@@ -199,7 +199,7 @@ nginx访问状态监控
 
 session共享
 	1. 到tomcat的lib下，jar包见附件
-	   每个tomcat下的context.xml中加入
+	2.  每个tomcat下conf下的context.xml中加入
 	<Manger  
 	ClassName="de.javakaffee.web.msm.MemcachedBackupSessionManager"
 	memcachedNodes="n1:192.168.43.151:11211"

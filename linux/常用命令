@@ -20,7 +20,8 @@ man 查看命令 man config     回车 一行一行翻 空格 一页一页翻 q�
 mysql  查看mysql 是否存在 yum serach mysql 查找mysql是否存在 
 mv   移动  mv /user/a.html  /user/local/  
         把user下的a.html 移动到user的local文件夹下
- 
+
+netstat -tunlp | grep 端口号  查看端口号
         
 pwd 显示当前工作目录 pwd
 

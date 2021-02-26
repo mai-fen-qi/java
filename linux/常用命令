@@ -103,7 +103,9 @@ jdk    rpm -ivh --prefix /usr/xiaomi jdk包名 在usr下的xiaomi文件下安装
       yy  复制
       p 粘贴
 
+mv b.txt c.bak   将文件 b.txt 重命名为  c.bak
 
+mv  -b 123.txt  345.txt   将 123.txt 重命名为 345.txt，时先备份 345.txt
 更改                                                          命令 ↑
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -126,6 +128,14 @@ cent os 7
 查看防火墙状态 systemctl status firewalld
 启动防火墙 systemctl strt firewalld
 
+
+ mv b.txt c.bak   将文件 b.txt 重命名为  c.bak
+
+ mv -i 456.txt /home/hk/cpdir/copy/abc    将  456.txt 移动到 /home/hk/cpdir/copy/ 并取名为 abc 若已存在文件 abc则会询问是否覆盖。
+
+ mv -f 456.txt /home/hk/cpdir/copy/abc    将  456.txt 移动到 /home/hk/cpdir/copy/ 并取名为 abc 若已存在文件 abc 覆盖时不会有任何提示。
+
+ mv  -b 123.txt  345.txt   将 123.txt 重命名为 345.txt，时先备份 345.txt。
 
 
 

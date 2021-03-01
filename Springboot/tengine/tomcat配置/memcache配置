@@ -43,3 +43,20 @@ tomcat 修改context.xml
 />
 
 </Context>
+
+
+
+卸载memcached 
+卸载baimemcached用2种方式：
+
+1、如果是rpm包安装的请du参考如下：
+查看zhimemcached包名后再卸dao载
+rpm   -qa|grep  memcached
+rpm   -e    memcached
+
+以上，请替换你实际查询zhuan到的shumemcacached包名
+
+2、如果是源码编译安装的，可以通过rm命令直接删除即可
+rm   -rf   /usr/local/memcached
+
+以上，请替换安装memcached的绝对路径

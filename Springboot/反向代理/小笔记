@@ -1,0 +1,30 @@
+1. 引入
+                import -》Existing Maven Project
+2.run as  以Main UI方式运行               
+                 
+3. 连接
+ 保存名称    con1
+ 数据库      MySql
+ 主机        localhost
+ 端口         3306
+ 用户名       root
+ 密码          xxxx
+ Schema/数据库    ssm（数据库名称)
+ 编码             utf8
+ 
+ 4.配置
+  
+      主键                       id
+      项目所在目录                生成完之后放的位置
+      实体类包名                  com。xxx。xxx
+      Mapper接口包名              com.xxx.xxx
+      自定义接口名称                XXXMapper
+      映射XMl文件报名                  .
+      
+      勾选上 Example
+ 
+ 
+ 
+ 
+ 
+ 

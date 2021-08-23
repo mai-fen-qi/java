@@ -250,6 +250,7 @@ ZRANGE     unkey1 0 -1 withscores  **返回结果**    yiming   40    baby  70  
 
 （ship list  存储结构  跳跃表 ）（类平衡树）
 
+![跳表](https://user-images.githubusercontent.com/67794564/130434533-f89aca19-5c3f-4b31-ae47-75b0dd5b367e.png)
 
 
 

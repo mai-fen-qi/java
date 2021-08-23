@@ -252,7 +252,6 @@ ZRANGE     unkey1 0 -1 withscores  **返回结果**    yiming   40    baby  70  
 
 
 
-![image-20210823180630280](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20210823180630280.png)
 
 数据量比较多 平均值相对最优
 

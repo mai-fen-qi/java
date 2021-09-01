@@ -297,6 +297,7 @@ SUBSCRIBE  小团团   这时候是接收不到 hello的   只能是监听以后
 
 **(但是这样不能往上翻直播间聊天记录)
 
+![redis历史消息](https://user-images.githubusercontent.com/67794564/131666744-be35c2f1-0234-4c99-a178-6cec57df3989.png)
 
 
 实时消息： 发布订阅功能  **pub  sub ** (命令)

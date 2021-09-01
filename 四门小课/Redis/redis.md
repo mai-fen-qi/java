@@ -317,9 +317,7 @@ SUBSCRIBE  小团团   这时候是接收不到 hello的   只能是监听以后
 
 
 
-
-
-![redis 消息处理](E:\笔记\redis 消息处理.png)
+![redis 消息处理](https://user-images.githubusercontent.com/67794564/131653942-ea256d31-1a0b-483f-976f-ba01b103b0ab.png)
 
 #### 注意：socket连接成本并不很大，因为  不需要密集的cpu计算，而是一个内存存储层，消息到了，直接推送出去。
 
@@ -329,15 +327,17 @@ SUBSCRIBE  小团团   这时候是接收不到 hello的   只能是监听以后
 
 因为redis 是单进程            所以  redis的事务就相当于 队列执行
 
-![redis  事务](E:\笔记\redis  事务.png)
+![redis  事务](https://user-images.githubusercontent.com/67794564/131654009-cbf659c4-f78e-47f4-8c16-6d878163a0b2.png)
+
 
 #### 因为  进程2 先执行 exec  所以 先把  进程2的所有操作执行完成  
 
 #### （进程2 执行过程中 进程1的所有操作阻塞 ）
 
-![redis 事务  实际执行](E:\笔记\redis 事务  实际执行.png)
 
 
+
+![redis 事务  实际执行](https://user-images.githubusercontent.com/67794564/131654060-fe88ac3e-8c16-40aa-ac7c-15ad05246d2c.png)
 
 这时候 进程1 在获取 k1的时候  就会报错（因为 进程2 已经把 k1 删了）
 
@@ -361,23 +361,27 @@ redis命令只会因为错误的语法而失败，或是命令用在了错误类
 
 在github 下载bloom 插件
 
-下载bloom过滤器![下载布隆](E:\笔记\下载布隆.png)
+下载bloom过滤器
+![下载布隆](https://user-images.githubusercontent.com/67794564/131654126-f6da9db2-1f83-47d2-9288-bfbf909bc996.png)
+
 
 因为是zip 文件  所以还需要下载一个unzip  才能解压zip文件
 
-![布隆zip](E:\笔记\布隆zip.png)
+![布隆zip](https://user-images.githubusercontent.com/67794564/131654145-0db77461-821d-42c6-8092-abdb0ec2983a.png)
+
 
 然后 直接解压就行  unzip master.zip
 
-![解压](E:\笔记\解压.png)
+![解压](https://user-images.githubusercontent.com/67794564/131654169-8f6866b3-7160-49ba-b7a9-9bcc01149324.png)
+
 
 进入Makefile 文件目录  直接执行make（需要安装gcc）
 
 然后把redisbloom.so 文件考到redis 目录下
+![redis 布隆启动](https://user-images.githubusercontent.com/67794564/131654259-e6cbbba0-b3d5-4214-af60-b7d4d455082e.png)
 
 
 
-![redis 布隆启动](E:\笔记\redis 布隆启动.png)
 
 启动redis 服务                                             挂载一个新的库                                  加载配置文件（不加会有默认的）   
 
@@ -395,7 +399,8 @@ redis命令只会因为错误的语法而失败，或是命令用在了错误类
 
 5.  成本低
 
-   ![布隆过滤器的冲突 ](E:\笔记\布隆过滤器的冲突 .png) 
+   ![布隆过滤器的冲突 ](https://user-images.githubusercontent.com/67794564/131654317-1b3bef0e-94b0-4a36-8d9a-f7af1ab1b31b.png)
+
 
 （元素1 的函数映射 到 bitmap上 **对应的位图 从0变成1 **）
 
@@ -414,12 +419,14 @@ redis命令只会因为错误的语法而失败，或是命令用在了错误类
 微服务架构 一般怎么搭建
 
 **放在 redis中 更合理 因为redis 是内存级的   这样客户端更轻盈 更符合微服务架构**
+![redis 布隆 的架构](https://user-images.githubusercontent.com/67794564/131654405-2e2f68c8-bb94-46e2-9521-a5b12e34d484.png)
 
-![redis 布隆 的架构](E:\笔记\redis 布隆 的架构.png)
+
+
 
 #### 布隆过滤器的使用
 
-![布隆适用](E:\笔记\布隆适用.png)
+ ![布隆适用](https://user-images.githubusercontent.com/67794564/131654377-37fb2eae-8024-472e-8fad-455223bf46d6.png)
 
 如果有这个数据 就返回1  没有就返回0
 
@@ -501,10 +508,7 @@ redis缓存和数据库有什么区别？
 非阻塞流程    先创建个子进程  ，然后子进程存有父进程所有的值，子进程 把数据写到磁盘  这时候就算父进程的数据发生修改 也不会影响子进程的数据 
 
 
-
-![非阻塞](E:\笔记\非阻塞.png)
-
-
+![非阻塞](https://user-images.githubusercontent.com/67794564/131654526-b00a2210-c2e0-41e7-a8a6-a319ee116607.png)
 
 
 
@@ -515,7 +519,7 @@ redis缓存和数据库有什么区别？
 1. 衔接，前一个命令的输出作为后一个命令的输入
 2. 管道会触发 ，创建【子进程】
 
-![管道](E:\笔记\管道.png)
+![管道](https://user-images.githubusercontent.com/67794564/131654566-23fe7eed-4667-467f-9e7f-7fcb11104fb5.png)
 
 
 
@@ -543,8 +547,9 @@ Linux 中 export 的环境变量，子进程的修改不会破坏父进程，父
 
 #### fork
 
-![fork](E:\笔记\fork.jpg)
 
+
+![fork](https://user-images.githubusercontent.com/67794564/131654588-0d89713e-61eb-46d1-a18f-92d95b6acefc.jpg)
 
 
 fork 就是复制一份 指针    并不会 在内存开辟两份   只有一份数据
@@ -567,6 +572,7 @@ fork 就是复制一份 指针    并不会 在内存开辟两份   只有一份
 
 **三个判断阶段**  （60s 内 发生1万次操作进入rdb) ( 300s 内 发生10次操作) （900s 内发生 1次操作） **逐级进行判断**
 
-![rdb 配置文件](E:\笔记\rdb 配置文件.png)
+![rdb 配置文件](https://user-images.githubusercontent.com/67794564/131654643-4eccb554-16fa-4e39-bd75-1cbc0292b11a.png)
+
 
 save “”  或者删掉其他save配置   就会不会触发RDB操作

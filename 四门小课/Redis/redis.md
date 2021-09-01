@@ -252,7 +252,8 @@ ZRANGE     unkey1 0 -1 withscores  **返回结果**    yiming   40    baby  70  
 
 
 
-![image-20210823151745875](E:\笔记\image-20210823151745875.png)
+![image-20210823151745875](https://user-images.githubusercontent.com/67794564/131653712-0b87a0a9-d744-4e5b-9fbf-d7c8646e6407.png)
+
 
 数据量比较多 平均值相对最优
 
@@ -296,7 +297,7 @@ SUBSCRIBE  小团团   这时候是接收不到 hello的   只能是监听以后
 
 **(但是这样不能往上翻直播间聊天记录)
 
-![redis历史消息](E:\笔记\redis历史消息.png)
+
 
 实时消息： 发布订阅功能  **pub  sub ** (命令)
 

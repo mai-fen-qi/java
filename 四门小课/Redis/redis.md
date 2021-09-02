@@ -6,6 +6,9 @@ redis 配置文件
 -------
 
 #### 配置文件开始
+
+
+aof-use-rdb-preamble   yes    （开启aof混合模式）
 daemonize yes   (允许redis 作为后台服务运行)
 -------
 #### 配置文件结束

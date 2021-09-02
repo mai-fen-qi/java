@@ -656,6 +656,21 @@ Redis是内存数据库 --》 写操作会触发IO--》三种写IO级别（NO、
 
   调用  aof 的 重写指令：BGREWRITEAOF    （重写aof 体积  把没有用的剔除掉）
 
+f-use-rdb-preamble   yes    （开启aof混合模式）
+
+刚开始是rdb文件  后边 是以明文方式追加aof 
+![aof 混合](https://user-images.githubusercontent.com/67794564/131857773-4dad6d37-8136-4b49-a850-3dcc73ce632e.png)
+
+
+此时 在执行bgsave 命令
+
+会生成两个文件dump.rdb  和 appendonly.aof  文件   但 两个开头都是 rdb 文件
+
+
+
+
+
+如果 发生flush 命令  这时候在出发BGREWRITEAOF    命令  那么 aof文件就会清空  只保留空数据的记录
 
 
 

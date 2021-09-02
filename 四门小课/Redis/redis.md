@@ -648,8 +648,10 @@ Redis是内存数据库 --》 写操作会触发IO--》三种写IO级别（NO、
  always    每次写入buffer的时候  立即调用flush()  这是数据最可靠的方式  最多损失一条数据  
 
 
+![Aof](https://user-images.githubusercontent.com/67794564/131851935-d593e898-b44d-45eb-bc5a-51df4a6e6b15.png)
 
 
+  调用  aof 的 重写指令：BGREWRITEAOF    （重写aof 体积  把没有用的剔除掉）
 
 
 

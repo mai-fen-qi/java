@@ -577,3 +577,70 @@ fork 就是复制一份 指针    并不会 在内存开辟两份   只有一份
 
 
 save “”  或者删掉其他save配置   就会不会触发RDB操作
+
+
+
+
+
+---
+
+redis   默认会开启rdb
+
+dbfilename dump.rdb        **持久化rdb文件名称**
+
+#### RDB 弊端 （不支持拉链，永远只有一个dump.rdb）
+
+容易丢失 时点之间的数据  （8点一次rdb  9点一次rdb  可能8-9点之间的数据就丢失了）
+
+#### RDB 优点 类似于java 中的序列化 恢复速度相对较快
+
+----
+
+#### AOF弊端       慢（追加每笔写操作） 体量无线变大 导致恢复慢
+
+#### AOF 优点     丢失数据少  
+
+redis中 ，rdb和aof可以同时开启 ，但如果开启了aof 只会用aof恢复数据 
+
+ redsi 4.0以后  AOF 包含RDB全量，增加记录新的写操作
+
+#### Redis  优化aof 
+
+4.0以前    计量重写  （1. 删除抵消的命令）  （2.  合并重复的命令）(  3.  最终也是一个纯指令的日志文件)
+
+4.0以后    计量重写     （将老的数据RDB到aof文件中）（将增量的以指令方式Append到AOF） 
+
+​                                     （AOF是一个混合体 利用了RDB的快 利用了日志的全量）
+
+
+
+-**aof默认是关闭的,需要手动打开**  改为:    appendonly  yes 
+
+Redis是内存数据库 --》 写操作会触发IO--》三种写IO级别（NO、always、everysec）
+
+ NO       就是 操做系统内核先把数据写到buffer里面  当buffer满了之后 才会写到磁盘里    
+
+​              如果一个文件20k  缓存区15k  那剩下的5k就会丢失  所以close()之前  需要手动flush() 一下，
+
+​              强制把缓存区的数据 写到磁盘中
+
+​             
+
+缺点：   有可能会损失一个buffer的数据
+
+
+![Redis IO 级别 NO](https://user-images.githubusercontent.com/67794564/131847173-50657a4f-745f-4ced-a001-7d97556f90bb.png)
+
+
+
+ everysec(每秒的意思） 默认级别   
+
+ always    每次写入buffer的时候  立即调用flush()  这是数据最可靠的方式  最多损失一条数据  
+
+
+
+
+
+
+
+

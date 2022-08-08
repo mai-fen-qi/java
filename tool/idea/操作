@@ -1,3 +1,6 @@
 1.  先通过 免费 进入idea  
 2.  创建 一个新项目
-3.  点击help 
+3.  点击help  --》 edit  custom  VM Options  在最下边添加 -javaagent:E:\path\jetbrains-agent.jar
+  保存 重新打开idea
+  
+ 4. 点击 help
